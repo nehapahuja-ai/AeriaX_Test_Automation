@@ -276,7 +276,6 @@ public class HomeSteps {
     private HomePage homePage() {
         if (homePage == null) {
             homePage = new HomePage();
-            System.out.println();
         }
         return homePage;
     }
