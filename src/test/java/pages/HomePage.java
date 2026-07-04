@@ -166,6 +166,29 @@ public class HomePage extends BasePage {
         clickElement(element);
     }
 
+    public void clickTopbarMenuItem(String itemName) {
+
+        By item = By.xpath(
+                "//button[text()='Switch Accounts']"
+        );
+
+        WebElement element = waitForClickable(item);
+        scrollIntoView(element);
+        clickElement(element);
+    }
+
+    public void clickDownArrowButtonThenSelect(String itemName) {
+        By profileButton = By.xpath(
+                "//span[text()='Tenant Admin']"
+        );
+
+        WebElement button = waitForClickable(profileButton);
+        scrollIntoView(button);
+        clickElement(button);
+
+        clickTopbarMenuItem(itemName);
+    }
+
     public void enterGeneratedOutletName(String label) {
         String outletName = generatedOutletName();
         type(firstVisible(
@@ -395,20 +418,18 @@ public class HomePage extends BasePage {
         clickElement(element);
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(ConfigReader.getInt("explicitWait", 15)));
-        wait.until(ExpectedConditions.or(
-                ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(@role,'option') or contains(@class,'option')][not(contains(@aria-disabled,'true'))]")),
-                ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(normalize-space()," + dropdownLiteral + ")]"))
-        ));
+        By openOptions = By.xpath(
+                "//*[@role='listbox']//*[(@role='option' or self::li or self::div or self::span) and not(contains(@aria-disabled,'true'))]"
+        );
+        wait.until(ExpectedConditions.visibilityOfElementLocated(openOptions));
 
-        List<WebElement> options = driver.findElements(By.xpath(
-                "//*[contains(@role,'option') or contains(@class,'option') or self::li or self::div][not(contains(@aria-disabled,'true'))]"
-        ));
-
-        if (!options.isEmpty()) {
-            WebElement option = options.get(0);
-            scrollIntoView(option);
-            clickElement(option);
-            return;
+        List<WebElement> options = wait.until(driver1 -> driver1.findElements(openOptions));
+        for (WebElement option : options) {
+            if (option.isDisplayed() && option.isEnabled()) {
+                scrollIntoView(option);
+                clickElement(option);
+                return;
+            }
         }
 
         element.sendKeys(org.openqa.selenium.Keys.ARROW_DOWN);

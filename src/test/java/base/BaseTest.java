@@ -6,5 +6,4 @@ public abstract class BaseTest {
     protected WebDriver driver() {
         return DriverFactory.getDriver();
     }
-
 }

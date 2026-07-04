@@ -255,6 +255,16 @@ public class HomeSteps {
         homePage().clickButton(buttonName);
     }
 
+    @When("the user clicks on {string}")
+    public void theUserClicksOn(String itemName) {
+        homePage().clickTopbarMenuItem(itemName);
+    }
+
+    @When("the user clicks on down arrow button then select {string}")
+    public void theUserClicksOnDownArrowButtonThenSelect(String itemName) {
+        homePage().clickDownArrowButtonThenSelect(itemName);
+    }
+
     @Then("verify that user navigate to Overview Page")
     public void verifyThatUserNavigateToOverviewPage() {
         Assert.assertTrue(
@@ -266,6 +276,7 @@ public class HomeSteps {
     private HomePage homePage() {
         if (homePage == null) {
             homePage = new HomePage();
+            System.out.println();
         }
         return homePage;
     }

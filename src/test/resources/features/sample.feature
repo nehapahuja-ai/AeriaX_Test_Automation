@@ -35,10 +35,11 @@ Feature: Sample application smoke test
     And the user selects "Exclusive" option for "Prices Inclusive or Exclusive of GST?"
     And the user clicks on Default GST Rate dropdown and selects "5%" option from drop down
     And the user selects "Veg & Non-Veg" for Menu Type
-    And the user select the checkbox "Chinese" from Cuisines dropdown
+    And the user selects any option from "Cuisines" dropdown
     And the user enters "500" in Cost for Two field
     And the user clicks "Done" button
-
+    And the user clicks on down arrow button then select "Switch Account"
+    When user select the tenant " Prestige Tech Park" from the list
     #Then the outlet should be created with all selected fulfillment modes
     #And the outlet details should display all three fulfillment modes
 
