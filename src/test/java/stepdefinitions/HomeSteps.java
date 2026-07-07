@@ -25,6 +25,11 @@ public class HomeSteps {
         homePage().openUrl(url);
     }
 
+    @When("user refresh the page")
+    public void userRefreshThePage() {
+        homePage().refreshPage();
+    }
+
     @When("user enter email ID {string}")
     public void userEnterEmailId(String email) {
         homePage().enterEmail(email);
@@ -105,6 +110,36 @@ public class HomeSteps {
         homePage().selectTenant(tenantName);
     }
 
+    @When("user select the site {string} from the list")
+    public void userSelectTheSiteFromTheList(String siteName) {
+        homePage().selectTenant(siteName.trim());
+    }
+
+    @Then("user select the outlet created in previous step")
+    public void userSelectTheOutletCreatedInPreviousStep() {
+        homePage().selectOutletCreatedInPreviousStep();
+    }
+
+    @Then("user search the outlet created in previous step in search bar")
+    public void userSearchTheOutletCreatedInPreviousStepInSearchBar() {
+        homePage().searchOutletCreatedInPreviousStepInSearchBar();
+    }
+
+    @Then("then user clicks on the outlet searched in previous step")
+    public void thenUserClicksOnTheOutletSearchedInPreviousStep() {
+        homePage().clickOutletSearchedInPreviousStep();
+    }
+
+    @Then("then user clicks on the outlet which is searched in previous step")
+    public void thenUserClicksOnTheOutletWhichIsSearchedInPreviousStep() {
+        homePage().clickOutletSearchedInPreviousStep();
+    }
+
+    @Then("then the user clicks on {string} button")
+    public void thenTheUserClicksOnButton(String buttonName) {
+        homePage().clickButton(buttonName);
+    }
+
     @When("user clicks on {string} in side stepper")
     public void userClicksOnInSideStepper(String menuName) {
         homePage().clickSideStepperMenu(menuName);
@@ -112,6 +147,11 @@ public class HomeSteps {
 
     @When("user clicks on {string} button")
     public void userClicksOnButton(String buttonName) {
+        homePage().clickButton(buttonName);
+    }
+
+    @When("the user click on {string} button")
+    public void theUserClickOnButton(String buttonName) {
         homePage().clickButton(buttonName);
     }
 
@@ -203,6 +243,13 @@ public class HomeSteps {
         // Open the dropdown to ensure options are loaded, then select the requested value
         homePage().viewDropdown(dropdownName);
         homePage().selectOptionValueFromDropdown(dropdownName, optionValue);
+    }
+
+    @When("then user clicks on {string} dropdown then select {string} option")
+    public void thenUserClicksOnDropdownThenSelectOption(String dropdownName, String optionName) {
+
+        homePage().clickButton(dropdownName);
+//        homePage().selectOptionValueFromDropdown(dropdownName, optionName);
     }
 
     @When("the user clicks on Default GST Rate dropdown and selects \"5%\" option from drop down")
