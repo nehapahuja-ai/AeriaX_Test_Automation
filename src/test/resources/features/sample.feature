@@ -38,8 +38,20 @@ Feature: Sample application smoke test
     And the user selects any option from "Cuisines" dropdown
     And the user enters "500" in Cost for Two field
     And the user clicks "Done" button
+    Then user search the outlet created in previous step in search bar
+    And then user clicks on the outlet which is searched in previous step
+    And then the user clicks on "Send for Approval" button
     And the user clicks on down arrow button then select "Switch Account"
-    When user select the tenant " Prestige Tech Park" from the list
+    When user select the site " Prestige Tech Park" from the list
+    And user clicks on Continue button
+    And user clicks on "Outlets" in side stepper
+    Then user search the outlet created in previous step in search bar
+    And then user clicks on the outlet which is searched in previous step
+    And user refresh the page
+    And then user clicks on "Approve" dropdown then select "Approve" option
+
+
+
     #Then the outlet should be created with all selected fulfillment modes
     #And the outlet details should display all three fulfillment modes
 

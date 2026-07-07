@@ -29,6 +29,7 @@ public class HomePage extends BasePage {
     private static final Pattern FALLBACK_OTP_PATTERN = Pattern.compile("\\b\\d{6}\\b");
     private static final Faker FAKER = new Faker(new Locale("en"));
     private final List<String> browserTabs = new ArrayList<>();
+    private String lastGeneratedOutletName;
 
     public void openHomePage() {
         open(ConfigReader.get("baseUrl", "https://example.com"));
@@ -37,6 +38,10 @@ public class HomePage extends BasePage {
     public void openUrl(String url) {
         open(url);
         rememberCurrentTab();
+    }
+
+    public void refreshPage() {
+        driver.navigate().refresh();
     }
 
     public void openAeriaSelectAccountPage() {
@@ -191,11 +196,65 @@ public class HomePage extends BasePage {
 
     public void enterGeneratedOutletName(String label) {
         String outletName = generatedOutletName();
+        lastGeneratedOutletName = outletName;
         type(firstVisible(
                 By.cssSelector("input[name='details.name']"),
                 By.cssSelector("input[id='details.name']"),
                 By.xpath("//label[contains(.,'" + label + "')]//following::input[1]")
         ), outletName);
+    }
+
+    public void selectOutletCreatedInPreviousStep() {
+        if (lastGeneratedOutletName == null || lastGeneratedOutletName.isBlank()) {
+            throw new IllegalStateException("No outlet name was captured from the previous step.");
+        }
+
+        String outletLiteral = xpathLiteral(lastGeneratedOutletName);
+        By outlet = By.xpath(
+                "//*[normalize-space()=" + outletLiteral + " or @title=" + outletLiteral + "]" +
+                        "/ancestor::*[self::button or self::label or self::div[contains(@class,'card') or contains(@class,'cursor') or @role='button']][1]"
+        );
+
+        WebElement element = waitForClickable(outlet);
+        scrollIntoView(element);
+        clickElement(element);
+    }
+
+    public void searchOutletCreatedInPreviousStepInSearchBar() {
+        if (lastGeneratedOutletName == null || lastGeneratedOutletName.isBlank()) {
+            throw new IllegalStateException("No outlet name was captured from the previous step.");
+        }
+
+        By searchInput = By.cssSelector("input[name='outletName']");
+        WebElement element = waitForVisible(searchInput);
+        scrollIntoView(element);
+        element.clear();
+        type(searchInput, lastGeneratedOutletName);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(ConfigReader.getInt("explicitWait", 15)));
+        String outletLiteral = xpathLiteral(lastGeneratedOutletName);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
+                "//*[@role='menu' and .//*[normalize-space()=" + outletLiteral + "] or .//*[normalize-space()='@ " + lastGeneratedOutletName + "']]" +
+                        " | //div[@role='menu' and .//*[normalize-space()=" + outletLiteral + "]]"
+        )));
+
+    }
+
+    public void clickOutletSearchedInPreviousStep() {
+        if (lastGeneratedOutletName == null || lastGeneratedOutletName.isBlank()) {
+            throw new IllegalStateException("No outlet name was captured from the previous step.");
+        }
+
+        String outletLiteral = xpathLiteral(lastGeneratedOutletName);
+        By outletCard = By.xpath(
+                "//*[@role='menu' and .//*[normalize-space()=" + outletLiteral + "]]" +
+                        " | //div[@role='menu' and .//*[normalize-space()=" + outletLiteral + "]]" +
+                        " | //button[.//*[normalize-space()=" + outletLiteral + "]]" +
+                        " | //a[.//*[normalize-space()=" + outletLiteral + "]]"
+        );
+
+        WebElement element = waitForVisible(outletCard);
+        scrollIntoView(element);
+        clickElement(element);
     }
 
     public void selectAnyLocationFromDropdown() {
@@ -434,6 +493,13 @@ public class HomePage extends BasePage {
 
         element.sendKeys(org.openqa.selenium.Keys.ARROW_DOWN);
         element.sendKeys(org.openqa.selenium.Keys.ENTER);
+        By costField = By.xpath(
+                "//*[self::label or self::div or self::span][contains(normalize-space(),'Cost for Two')]" +
+                        "/following::input[1]"
+        );
+        WebElement element1 = waitForClickable(costField);
+        scrollIntoView(element1);
+        clickElement(element1);
     }
 
     // Public wrapper to select a specific option value from a dropdown by label/name
